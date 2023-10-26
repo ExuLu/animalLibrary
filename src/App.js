@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import initialAnimals from './data';
+import {initialAnimals} from './data';
 import Button from './Button';
 import Header from './Header';
 import AnimalsList from './AnimalsList';
