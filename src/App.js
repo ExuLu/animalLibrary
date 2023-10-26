@@ -1,12 +1,26 @@
 import { useState } from 'react';
 import { initialAnimals } from './data';
 
-function Button({ children }) {
-  return <button className='button'>{children}</button>;
+function Button({ children, onClick }) {
+  return (
+    <button onClick={onClick} className='button'>
+      {children}
+    </button>
+  );
 }
 
 export default function App() {
   const [animals, setAnimals] = useState(initialAnimals);
+  const [showAddForm, setShowAddForm] = useState(false);
+
+  function addAnimal(animal) {
+    setAnimals((animals) => [...animals, animal]);
+    setShowAddForm(false);
+  }
+
+  function handleAddAnimalButton() {
+    setShowAddForm((showAddForm) => !showAddForm);
+  }
 
   return (
     <div>
@@ -14,8 +28,10 @@ export default function App() {
       <div className='app'>
         <div className='sidebar'>
           <AnimalsList animals={animals} />
-          <FormAddAnimal />
-          <Button>Add animal</Button>
+          {showAddForm && <FormAddAnimal onAddAnimal={addAnimal} />}
+          <Button onClick={handleAddAnimalButton}>
+            {showAddForm ? 'Close' : 'Add animal'}
+          </Button>
         </div>
         <Information animals={animals} />
       </div>
@@ -31,7 +47,7 @@ function AnimalsList({ animals }) {
   return (
     <ul>
       {animals.map((animal) => (
-        <Animal animal={animal} />
+        <Animal animal={animal} key={animal.id} />
       ))}
     </ul>
   );
@@ -47,19 +63,43 @@ function Animal({ animal }) {
   );
 }
 
-function FormAddAnimal() {
+function FormAddAnimal({ onAddAnimal }) {
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [image, setImage] = useState('');
+
+  function handleSumbitAdding(e) {
+    e.preventDefault();
+    if (!name || !description || !image) return;
+
+    const newAnimal = { name, description, image, id: crypto.randomUUID() };
+    onAddAnimal(newAnimal);
+  }
+
   return (
     <form className='form-add-animal'>
       <label>🦁 Animal name</label>
-      <input type='text' />
+      <input
+        type='text'
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
 
       <label>🐼 Description</label>
-      <input type='text'></input>
+      <input
+        type='text'
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
 
       <label>📸 Image URL</label>
-      <input type='text' />
+      <input
+        type='text'
+        value={image}
+        onChange={(e) => setImage(e.target.value)}
+      />
 
-      <Button>Add</Button>
+      <Button onClick={handleSumbitAdding}>Add</Button>
     </form>
   );
 }

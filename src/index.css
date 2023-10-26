@@ -18,7 +18,7 @@ html {
 }
 
 body {
-  height: 100vh;
+  height: 95vh;
   color: #495057;
   display: flex;
   align-items: center;
@@ -165,16 +165,16 @@ form h2 {
   margin-bottom: 1.6rem;
 }
 
-.info h2{
+.info h2 {
   text-align: center;
-  margin-bottom: 20px
+  margin-bottom: 20px;
 }
 
-.info p{
+.info p {
   font-size: 13px;
 }
 
-.info img{
+.info img {
   height: 250px;
   margin-top: 20px;
 }
