@@ -12,7 +12,7 @@ function Button({ children, onClick }) {
 export default function App() {
   const [animals, setAnimals] = useState(initialAnimals);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [seletctedAnimal, setSelectedAnimal] = useState(null);
+  const [selectedAnimal, setSelectedAnimal] = useState(null);
 
   function addAnimal(animal) {
     setAnimals((animals) => [...animals, animal]);
@@ -21,10 +21,12 @@ export default function App() {
 
   function handleAddAnimalButton() {
     setShowAddForm((showAddForm) => !showAddForm);
+    setSelectedAnimal(null);
   }
 
   function handleSelection(animal) {
-    setSelectedAnimal(animal.id === seletctedAnimal?.id ? null : animal);
+    setSelectedAnimal(animal.id === selectedAnimal?.id ? null : animal);
+    setShowAddForm(false);
   }
 
   return (
@@ -35,14 +37,14 @@ export default function App() {
           <AnimalsList
             animals={animals}
             onSelection={handleSelection}
-            seletctedAnimal={seletctedAnimal}
+            selectedAnimal={selectedAnimal}
           />
           {showAddForm && <FormAddAnimal onAddAnimal={addAnimal} />}
           <Button onClick={handleAddAnimalButton}>
             {showAddForm ? 'Close' : 'Add animal'}
           </Button>
         </div>
-        {seletctedAnimal && <Information animals={animals} />}
+        {selectedAnimal && <Information animal={selectedAnimal} />}
       </div>
     </div>
   );
@@ -52,7 +54,7 @@ function Header() {
   return <h1 className='header'>Animal Library</h1>;
 }
 
-function AnimalsList({ animals, onSelection, seletctedAnimal }) {
+function AnimalsList({ animals, onSelection, selectedAnimal }) {
   return (
     <ul>
       {animals.map((animal) => (
@@ -60,15 +62,15 @@ function AnimalsList({ animals, onSelection, seletctedAnimal }) {
           animal={animal}
           key={animal.id}
           onSelection={onSelection}
-          seletctedAnimal={seletctedAnimal}
+          selectedAnimal={selectedAnimal}
         />
       ))}
     </ul>
   );
 }
 
-function Animal({ animal, onSelection, seletctedAnimal }) {
-  const isSelect = seletctedAnimal?.id === animal.id;
+function Animal({ animal, onSelection, selectedAnimal }) {
+  const isSelect = selectedAnimal?.id === animal.id;
 
   return (
     <li className={isSelect ? 'selected' : ''}>
@@ -122,12 +124,12 @@ function FormAddAnimal({ onAddAnimal }) {
   );
 }
 
-function Information({ animals }) {
+function Information({ animal }) {
   return (
     <div className='info'>
-      <h2>{animals[0].name}</h2>
-      <label>{animals[0].description}</label>
-      <img src={animals[0].image} alt={animals[0].name} />
+      <h2>{animal.name}</h2>
+      <label>{animal.description}</label>
+      <img src={animal.image} alt={animal.name} />
     </div>
   );
 }
