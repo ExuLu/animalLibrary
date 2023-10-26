@@ -12,6 +12,7 @@ function Button({ children, onClick }) {
 export default function App() {
   const [animals, setAnimals] = useState(initialAnimals);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [seletctedAnimal, setSelectedAnimal] = useState(null);
 
   function addAnimal(animal) {
     setAnimals((animals) => [...animals, animal]);
@@ -22,18 +23,26 @@ export default function App() {
     setShowAddForm((showAddForm) => !showAddForm);
   }
 
+  function handleSelection(animal) {
+    setSelectedAnimal(animal.id === seletctedAnimal?.id ? null : animal);
+  }
+
   return (
     <div>
       <Header />
       <div className='app'>
         <div className='sidebar'>
-          <AnimalsList animals={animals} />
+          <AnimalsList
+            animals={animals}
+            onSelection={handleSelection}
+            seletctedAnimal={seletctedAnimal}
+          />
           {showAddForm && <FormAddAnimal onAddAnimal={addAnimal} />}
           <Button onClick={handleAddAnimalButton}>
             {showAddForm ? 'Close' : 'Add animal'}
           </Button>
         </div>
-        <Information animals={animals} />
+        {seletctedAnimal && <Information animals={animals} />}
       </div>
     </div>
   );
@@ -43,22 +52,31 @@ function Header() {
   return <h1 className='header'>Animal Library</h1>;
 }
 
-function AnimalsList({ animals }) {
+function AnimalsList({ animals, onSelection, seletctedAnimal }) {
   return (
     <ul>
       {animals.map((animal) => (
-        <Animal animal={animal} key={animal.id} />
+        <Animal
+          animal={animal}
+          key={animal.id}
+          onSelection={onSelection}
+          seletctedAnimal={seletctedAnimal}
+        />
       ))}
     </ul>
   );
 }
 
-function Animal({ animal }) {
+function Animal({ animal, onSelection, seletctedAnimal }) {
+  const isSelect = seletctedAnimal?.id === animal.id;
+
   return (
-    <li>
+    <li className={isSelect ? 'selected' : ''}>
       <img src={animal.image} alt={animal.name}></img>
       <h3>{animal.name}</h3>
-      <Button>Read About</Button>
+      <Button onClick={() => onSelection(animal)}>
+        {isSelect ? 'Close' : 'Read About'}
+      </Button>
     </li>
   );
 }
